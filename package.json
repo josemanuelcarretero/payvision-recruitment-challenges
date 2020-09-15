@@ -4,9 +4,12 @@
   "description": "Payvision challenge (JavaScript): Refactoring - Fraud detection",
   "main": "index.js",
   "scripts": {
-    "test": "jest --verbose tests/*.spec.js",
+    "test": "jest --verbose tests",
     "lint": "eslint src/**/*.js tests/**/*.js",
     "lint:fix": "eslint --fix src/**/*.js tests/**/*.js"
+  },
+  "jest": {
+    "testRegex": ".*.(spec|test).js"
   },
   "husky": {
     "hooks": {
