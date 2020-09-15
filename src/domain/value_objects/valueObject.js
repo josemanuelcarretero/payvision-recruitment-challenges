@@ -1,5 +1,10 @@
 const validator = require('email-validator');
 
+// this regular expression allow us remove both the dots and the alias
+// src: https://github.com/johno/normalize-email/blob/master/index.js
+// src: https://tools.ietf.org/id/draft-newman-email-subaddr-01.html
+const NORMALIZE_EMAIL_REGEX = /\.|\+.*$/g;
+
 class ValueObject {
     static validateStringValueObject(field, value) {
         if (typeof value !== 'string')
@@ -32,19 +37,15 @@ class ValueObject {
     }
 
     static normalizeEmailValueObject(value) {
-        const aux = value.split('@');
-        const atIndex = aux[0].indexOf('+');
+        const [username, domain] = value.split('@');
         // Src: https://developer.mozilla.org/es/docs/Web/JavaScript/Referencia/Objetos_globales/String/substring
         // Src: https://tools.ietf.org/id/draft-newman-email-subaddr-01.html#toc
         // (Fixed) the substring method extracts characters from indexA to indexB without including it
         //     string.substring(indexA, indexB)
         // Since the index of the plus sign(atIndex) is the character that should not be included and not the character before it
         // Example: a.d.d.r.e.s.s+alias@domain.com -> address+alias@domain.com
-        aux[0] =
-            atIndex < 0
-                ? aux[0].replace('.', '')
-                : aux[0].replace('.', '').substring(0, atIndex);
-        return aux.join('@');
+        // (Simplify) Simplify code with regular expression. This expression eliminates subaddress and dots in the address
+        return [username.replace(NORMALIZE_EMAIL_REGEX, ''), domain].join('@');
     }
 
     constructor() {
